@@ -1,6 +1,6 @@
 {
-  "package": "elocindev.animation_overhaul.mixins",
-  "refmap": "animation_overhaul.mixins.refmap.json",
+  "package": "elocindev.animation_overhaul.mixin",
+  "refmap": "animation_overhaul.refmap.json",
   "minVersion": "0.7",
   "compatibilityLevel": "JAVA_17",
   "client": [

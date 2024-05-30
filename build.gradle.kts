@@ -51,7 +51,7 @@ loom {
 
     }
 
-    mixin.defaultRefmapName.set("${mod_id}.mixins.refmap.json")
+    mixin.defaultRefmapName.set("${mod_id}.refmap.json")
 }
 
 repositories {

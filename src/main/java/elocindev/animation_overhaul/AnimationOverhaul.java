@@ -1,5 +1,8 @@
 package elocindev.animation_overhaul;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //#if FABRIC==1
 
 import net.fabricmc.api.ModInitializer;
@@ -17,7 +20,8 @@ public class AnimationOverhaul
 //#endif
 
     public static String MODID = "animation_overhaul";
-    
+    public static final Logger LOGGER = LoggerFactory.getLogger("animation_overhaul");
+
     //#if FABRIC==1
     @Override
     public void onInitialize() {}

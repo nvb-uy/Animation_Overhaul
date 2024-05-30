@@ -36,7 +36,7 @@ public abstract class PlayerEntityRendererMixin
 
     @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/player/AbstractClientPlayer;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", cancellable = true)
     public void render(AbstractClientPlayer player, float f, float g, PoseStack matrixStack,
-            MultiBufferSource vertexConsumerProvider, int i, CallbackInfo ci) {
+        MultiBufferSource vertexConsumerProvider, int i, CallbackInfo ci) {
 
         Minecraft mc = Minecraft.getInstance();
 
