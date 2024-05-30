@@ -116,7 +116,7 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
     public float momentum = 0;
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void init(ClientLevel level, GameProfile profile, CallbackInfo info) {
+    private void animation_overhaul$init(ClientLevel level, GameProfile profile, CallbackInfo info) {
         PlayerAnimationAccess.getPlayerAnimLayer((AbstractClientPlayer) (Object) this).addAnimLayer(850, modAnimationContainer);
 
         var cfg = AnimationOverhaul.CONFIG.enabled_animations;

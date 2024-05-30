@@ -37,7 +37,7 @@ public abstract class PlayerEntityRendererMixin
     protected abstract void setModelProperties(AbstractClientPlayer player);
 
     @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/player/AbstractClientPlayer;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", cancellable = true)
-    public void render(AbstractClientPlayer player, float f, float g, PoseStack matrixStack,
+    public void animation_overhaul$renderLeaning(AbstractClientPlayer player, float f, float g, PoseStack matrixStack,
         MultiBufferSource vertexConsumerProvider, int i, CallbackInfo ci) {
 
         Minecraft mc = Minecraft.getInstance();
