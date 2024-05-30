@@ -1,41 +1,43 @@
 package elocindev.animation_overhaul.registry;
 
+import elocindev.animation_overhaul.api.AnimationProperties;
+
 public class AOAnimationInstance {
     public class States {
-        public boolean idle = true;
-        public boolean sneak_idle = true;
-        public boolean sneak_walk = true;
-        public boolean walk = true;
-        public boolean run = true;
-        public boolean turn_right = true;
-        public boolean turn_left = true;
-        public boolean falling = true;
-        public boolean landing = true;
-        public boolean swimming = true;
-        public boolean swim_idle = true;
-        public boolean crawl_idle = true;
-        public boolean crawling = true;
-        public boolean eating = true;
-        public boolean climbing = true;
-        public boolean climbing_idle = true;
-        public boolean sprint_stop = true;
-        public boolean fence_idle = true;
-        public boolean fence_walk = true;
-        public boolean edge_idle = true;
-        public boolean elytra_fly = true;
-        public boolean flint_and_steel = true;
-        public boolean flint_and_steel_sneak = true;
-        public boolean boat_idle = true;
-        public boolean boat_left_paddle = true;
-        public boolean boat_right_paddle = true;
-        public boolean boat_forward = true;
-        public boolean rolling = true;
-        public boolean jump = true;
-        public boolean fall = true;
-        public boolean punch = true;
-        public boolean punch_sneaking = true;
-        public boolean sword_swing = true;
-        public boolean sword_swing_sneak = true;
+        public AnimationProperties idle = new AnimationProperties();
+        public AnimationProperties sneak_idle = new AnimationProperties();
+        public AnimationProperties sneak_walk = new AnimationProperties();
+        public AnimationProperties walk = new AnimationProperties();
+        public AnimationProperties run = new AnimationProperties();
+        public AnimationProperties turn_right = new AnimationProperties();
+        public AnimationProperties turn_left = new AnimationProperties();
+        public AnimationProperties falling = new AnimationProperties();
+        public AnimationProperties landing = new AnimationProperties();
+        public AnimationProperties swimming = new AnimationProperties();
+        public AnimationProperties swim_idle = new AnimationProperties();
+        public AnimationProperties crawl_idle = new AnimationProperties().setFade(0);
+        public AnimationProperties crawling = new AnimationProperties().setFade(0);
+        public AnimationProperties eating = new AnimationProperties();
+        public AnimationProperties climbing = new AnimationProperties();
+        public AnimationProperties climbing_idle = new AnimationProperties();
+        public AnimationProperties sprint_stop = new AnimationProperties().setFade(2);
+        public AnimationProperties fence_idle = new AnimationProperties();
+        public AnimationProperties fence_walk = new AnimationProperties();
+        public AnimationProperties edge_idle = new AnimationProperties();
+        public AnimationProperties elytra_fly = new AnimationProperties();
+        public AnimationProperties flint_and_steel = new AnimationProperties();
+        public AnimationProperties flint_and_steel_sneak = new AnimationProperties();
+        public AnimationProperties boat_idle = new AnimationProperties();
+        public AnimationProperties boat_left_paddle = new AnimationProperties();
+        public AnimationProperties boat_right_paddle = new AnimationProperties();
+        public AnimationProperties boat_forward = new AnimationProperties();
+        public AnimationProperties rolling = new AnimationProperties();
+        public AnimationProperties jump = new AnimationProperties();
+        public AnimationProperties fall = new AnimationProperties();
+        public AnimationProperties punch = new AnimationProperties();
+        public AnimationProperties punch_sneaking = new AnimationProperties();
+        public AnimationProperties sword_swing = new AnimationProperties();
+        public AnimationProperties sword_swing_sneak = new AnimationProperties();
     }
 
     public static States getNewStates() {
