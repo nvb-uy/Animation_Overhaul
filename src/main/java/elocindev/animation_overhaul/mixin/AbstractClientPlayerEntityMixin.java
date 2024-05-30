@@ -13,7 +13,8 @@ import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import elocindev.animation_overhaul.AnimationOverhaul;
-import elocindev.animation_overhaul.IPlayerAccessor;
+import elocindev.animation_overhaul.api.ILeanablePlayer;
+import elocindev.animation_overhaul.util.PlatformUtility;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
@@ -48,7 +49,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AbstractClientPlayer.class)
-public abstract class AbstractClientPlayerEntityMixin extends Player implements IPlayerAccessor {
+public abstract class AbstractClientPlayerEntityMixin extends Player implements ILeanablePlayer {
 
     @Unique
     private final ModifierLayer<IAnimation> modAnimationContainer = new ModifierLayer<>();
@@ -80,7 +81,6 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
     public KeyframeAnimation anim_crawl_idle = null;
     public KeyframeAnimation anim_crawling = null;
     public KeyframeAnimation anim_eating = null;
-
     public KeyframeAnimation anim_climbing = null;
     public KeyframeAnimation anim_climbing_idle = null;
     public KeyframeAnimation anim_sprint_stop = null;
@@ -94,18 +94,17 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
     public KeyframeAnimation anim_boat_left_paddle = null;
     public KeyframeAnimation anim_boat_right_paddle = null;
     public KeyframeAnimation anim_boat_forward = null;
-
     public KeyframeAnimation anim_rolling = null;
-
-    public int punch_index = 0;
-    public int jump_index = 0;
     public KeyframeAnimation anim_jump[] = new KeyframeAnimation[2];
     public KeyframeAnimation anim_fall[] = new KeyframeAnimation[2];
-
     public KeyframeAnimation anim_punch[] = new KeyframeAnimation[2];
     public KeyframeAnimation anim_punch_sneaking[] = new KeyframeAnimation[2];
     public KeyframeAnimation anim_sword_swing[] = new KeyframeAnimation[2];
     public KeyframeAnimation anim_sword_swing_sneak[] = new KeyframeAnimation[2];
+
+    public int punch_index = 0;
+    public int jump_index = 0;
+    
 
     public float leanAmount = 0;
     public float leanMultiplier = 1;
@@ -118,7 +117,7 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void init(ClientLevel level, GameProfile profile, CallbackInfo info) {
-        PlayerAnimationAccess.getPlayerAnimLayer((AbstractClientPlayer) (Object) this).addAnimLayer(1000, modAnimationContainer);
+        PlayerAnimationAccess.getPlayerAnimLayer((AbstractClientPlayer) (Object) this).addAnimLayer(850, modAnimationContainer);
 
         anim_idle = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "idle"));
         anim_fall[0] = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "fall_first"));
@@ -506,6 +505,10 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
             ItemStack stack = getMainHandItem();
 
             boolean sword_animations = false;
+
+            if (PlatformUtility.isModLoaded("bettercombat")) {
+                sword_animations = false;
+            }
 
             if (stack != null) {
                 if (stack.getItem() instanceof SwordItem || stack.getItem() instanceof PickaxeItem ||

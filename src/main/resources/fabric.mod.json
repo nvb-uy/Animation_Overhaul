@@ -12,6 +12,9 @@
     "issues": "https://github.com/nvb-uy/Animation_Overhaul/issues"
   },
   "entrypoints": {
+    "main": [
+      "elocindev.animation_overhaul.AnimationOverhaul"
+    ]
   },
   "mixins": [
     "${id}.mixins.json"

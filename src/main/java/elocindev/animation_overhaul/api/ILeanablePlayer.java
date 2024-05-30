@@ -1,8 +1,7 @@
-package elocindev.animation_overhaul;
+package elocindev.animation_overhaul.api;
 
-public interface IPlayerAccessor {
+public interface ILeanablePlayer {
     float getLeanAmount();
     float getLeanMultiplier();
-
     float getSquash();
 }

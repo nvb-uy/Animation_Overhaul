@@ -1,6 +1,7 @@
 package elocindev.animation_overhaul.mixin;
 
-import elocindev.animation_overhaul.IPlayerAccessor;
+import elocindev.animation_overhaul.compat.SpellEngineCompat;
+import elocindev.animation_overhaul.api.ILeanablePlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -22,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-@Mixin(PlayerRenderer.class)
+@Mixin(value = PlayerRenderer.class, priority = 300)
 public abstract class PlayerEntityRendererMixin
         extends LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
 
@@ -31,6 +32,7 @@ public abstract class PlayerEntityRendererMixin
         super(ctx, model, shadowRadius);
     }
 
+    
     @Shadow
     protected abstract void setModelProperties(AbstractClientPlayer player);
 
@@ -44,15 +46,17 @@ public abstract class PlayerEntityRendererMixin
                 && player == mc.player) {
             return;
         }
+        
+        if (SpellEngineCompat.shouldLetAnimate(player)) return;
 
         matrixStack.pushPose();
 
         float lean_x = (float) player.getDeltaMovement().z;
         float lean_z = -(float) player.getDeltaMovement().x;
 
-        float turnLeanAmount = ((IPlayerAccessor) player).getLeanAmount();
-        float leanMultiplier = ((IPlayerAccessor) player).getLeanMultiplier();
-        float player_squash = ((IPlayerAccessor) player).getSquash();
+        float turnLeanAmount = ((ILeanablePlayer) player).getLeanAmount();
+        float leanMultiplier = ((ILeanablePlayer) player).getLeanMultiplier();
+        float player_squash = ((ILeanablePlayer) player).getSquash();
         player_squash = Mth.clamp(player_squash, -1, 1) * 0.25f;
 
         float h_scale = 1;
