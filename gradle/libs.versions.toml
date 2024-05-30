@@ -1,0 +1,50 @@
+[versions]
+# Kotlin
+kotlin = "1.8.22"
+
+# Config
+yacl = "3.1.1+1.20"
+modMenu = "7.2.1"
+
+# Essential Dependencies
+egt = "0.2.2"
+
+# Publishing
+minotaur = "2.8.0"
+cursegradle = "1.4.0"
+
+# Misc
+shadow = "7.1.2"
+blossom = "1.3.1"
+devAuth = "1.1.2"
+objc = "1.2"
+
+[libraries]
+# Config
+yacl_fabric = { module = "dev.isxander.yacl:yet-another-config-lib-fabric", version.ref = "yacl" }
+yacl_forge = { module = "dev.isxander.yacl:yet-another-config-lib-forge", version.ref = "yacl" }
+modMenu = { module = "com.terraformersmc:modmenu", version.ref = "modMenu" }
+
+# devAuth
+devAuth_fabric = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devAuth" }
+devAuth_forge = { module = "me.djtheredstoner:DevAuth-forge-latest", version.ref = "devAuth" }
+
+# MacOs
+objc = { module = "ca.weblite:java-objc-bridge", version.ref = "objc" }
+
+[plugins]
+# Kotlin
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+
+# Essential Gradle Toolkit
+egt_multiversion = { id = "gg.essential.multi-version", version.ref = "egt" }
+egt_multiversion_root = { id = "gg.essential.multi-version.root", version.ref = "egt" }
+egt_defaults = { id = "gg.essential.defaults", version.ref = "egt" }
+
+# Publishing
+minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
+cursegradle = { id = "com.matthewprenger.cursegradle", version.ref = "cursegradle" }
+
+# Misc
+shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
+blossom = { id = "net.kyori.blossom", version.ref = "blossom" }

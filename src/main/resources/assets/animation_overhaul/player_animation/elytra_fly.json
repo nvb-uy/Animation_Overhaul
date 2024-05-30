@@ -1,0 +1,32 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"elytra_fly": {
+			"loop": true,
+			"animation_length": 17.6,
+			"bones": {
+				"right_arm": {
+					"rotation": {
+						"vector": [0, 0, 7.5]
+					}
+				},
+				"left_arm": {
+					"rotation": {
+						"vector": [0, 0, -7.5]
+					}
+				},
+				"right_leg": {
+					"rotation": {
+						"vector": [0, 0, 2.5]
+					}
+				},
+				"left_leg": {
+					"rotation": {
+						"vector": [0, 0, -2.5]
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}

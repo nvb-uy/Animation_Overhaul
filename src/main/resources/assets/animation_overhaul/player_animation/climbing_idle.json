@@ -1,0 +1,40 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"climbing_idle": {
+			"loop": true,
+			"bones": {
+				"right_arm": {
+					"rotation": {
+						"vector": [-160, 0, 0]
+					},
+					"position": {
+						"vector": [0.1, 0, 0]
+					}
+				},
+				"left_arm": {
+					"rotation": {
+						"vector": [-160, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"right_leg": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					},
+					"position": {
+						"vector": [0, 3, -3]
+					}
+				},
+				"left_leg": {
+					"position": {
+						"vector": [0, 3, -3]
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}

@@ -1,0 +1,52 @@
+name: Build (multiversion)
+on:
+  release:
+    types: [created]
+
+concurrency:
+  group: ${{ github.head_ref || format('{0}-{1}', github.ref, github.run_number) }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            **/loom-cache
+            **/prebundled-jars
+          key: ${{ runner.os }}-gradle-v2-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Chmod Gradle
+        run: chmod +x ./gradlew
+
+      - name: Build
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CURSEFORGE_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: ./gradlew publish --no-daemon
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts
+          path: jars/

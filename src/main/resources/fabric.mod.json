@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "name": "${name}",
+  "version": "${version}",
+  "description": "Overhauls the player's animations. Based from Kelvin's Better Player Animations",
+  "authors": [
+    "ElocinDev"
+  ],
+  "contact": {
+    "sources": "https://github.com/nvb-uy/Animation_Overhaul",
+    "issues": "https://github.com/nvb-uy/Animation_Overhaul/issues"
+  },
+  "entrypoints": {
+  },
+  "mixins": [
+    "${id}.mixins.json"
+  ],
+  "custom": {
+  },
+  "icon": "logo.png",
+  "license": "AGNYA License",
+  "environment": "client",
+  "depends": {
+    "fabricloader": ">=0.14.0",
+    "minecraft": "${mcVersionStr}",
+    "java": ">=${java}"
+  },
+  "recommends": {
+  }
+}

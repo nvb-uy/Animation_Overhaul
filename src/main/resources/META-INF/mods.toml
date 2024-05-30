@@ -1,0 +1,19 @@
+modLoader = "javafml"
+loaderVersion="[37,)"
+license="AGNYA License"
+showAsResourcePack=false
+
+[[mods]]
+modId="animation_overhaul"
+version="${version}"
+displayName="Animation Overhaul"
+authors="ElocinDev"
+description="Replaces heart particles with random pride flags."
+logoFile="logo.png"
+
+[[dependencies.prideful_animals]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.19,)"
+ordering="NONE"
+side="BOTH"

@@ -1,0 +1,12 @@
+{
+  "package": "elocindev.animation_overhaul.mixins",
+  "refmap": "animation_overhaul.mixins.refmap.json",
+  "minVersion": "0.7",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "AbstractClientPlayerEntityMixin",
+    "PlayerEntityRendererMixin"
+  ],
+  "mixins": [
+  ]
+}
