@@ -11,7 +11,6 @@ import dev.kosmx.playerAnim.core.util.Ease;
 import dev.kosmx.playerAnim.core.util.MathHelper;
 import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
-import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import elocindev.animation_overhaul.AnimationOverhaul;
 import elocindev.animation_overhaul.api.ILeanablePlayer;
 import elocindev.animation_overhaul.util.PlatformUtility;
@@ -42,6 +41,8 @@ import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+import elocindev.animation_overhaul.api.AnimationHolder;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -67,44 +68,43 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
         );
     }
 
-    public KeyframeAnimation anim_idle = null;
-    public KeyframeAnimation anim_sneak_idle = null;
-    public KeyframeAnimation anim_sneak_walk = null;
-    public KeyframeAnimation anim_walk = null;
-    public KeyframeAnimation anim_run = null;
-    public KeyframeAnimation anim_turn_right = null;
-    public KeyframeAnimation anim_turn_left = null;
-    public KeyframeAnimation anim_falling = null;
-    public KeyframeAnimation anim_landing = null;
-    public KeyframeAnimation anim_swimming = null;
-    public KeyframeAnimation anim_swim_idle = null;
-    public KeyframeAnimation anim_crawl_idle = null;
-    public KeyframeAnimation anim_crawling = null;
-    public KeyframeAnimation anim_eating = null;
-    public KeyframeAnimation anim_climbing = null;
-    public KeyframeAnimation anim_climbing_idle = null;
-    public KeyframeAnimation anim_sprint_stop = null;
-    public KeyframeAnimation anim_fence_idle = null;
-    public KeyframeAnimation anim_fence_walk = null;
-    public KeyframeAnimation anim_edge_idle = null;
-    public KeyframeAnimation anim_elytra_fly = null;
-    public KeyframeAnimation anim_flint_and_steel = null;
-    public KeyframeAnimation anim_flint_and_steel_sneak = null;
-    public KeyframeAnimation anim_boat_idle = null;
-    public KeyframeAnimation anim_boat_left_paddle = null;
-    public KeyframeAnimation anim_boat_right_paddle = null;
-    public KeyframeAnimation anim_boat_forward = null;
-    public KeyframeAnimation anim_rolling = null;
-    public KeyframeAnimation anim_jump[] = new KeyframeAnimation[2];
-    public KeyframeAnimation anim_fall[] = new KeyframeAnimation[2];
-    public KeyframeAnimation anim_punch[] = new KeyframeAnimation[2];
-    public KeyframeAnimation anim_punch_sneaking[] = new KeyframeAnimation[2];
-    public KeyframeAnimation anim_sword_swing[] = new KeyframeAnimation[2];
-    public KeyframeAnimation anim_sword_swing_sneak[] = new KeyframeAnimation[2];
+    public AnimationHolder anim_idle = AnimationHolder.EMPTY;
+    public AnimationHolder anim_sneak_idle = AnimationHolder.EMPTY;
+    public AnimationHolder anim_sneak_walk = AnimationHolder.EMPTY;
+    public AnimationHolder anim_walk = AnimationHolder.EMPTY;
+    public AnimationHolder anim_run = AnimationHolder.EMPTY;
+    public AnimationHolder anim_turn_right = AnimationHolder.EMPTY;
+    public AnimationHolder anim_turn_left = AnimationHolder.EMPTY;
+    public AnimationHolder anim_falling = AnimationHolder.EMPTY;
+    public AnimationHolder anim_landing = AnimationHolder.EMPTY;
+    public AnimationHolder anim_swimming = AnimationHolder.EMPTY;
+    public AnimationHolder anim_swim_idle = AnimationHolder.EMPTY;
+    public AnimationHolder anim_crawl_idle = AnimationHolder.EMPTY;
+    public AnimationHolder anim_crawling = AnimationHolder.EMPTY;
+    public AnimationHolder anim_eating = AnimationHolder.EMPTY;
+    public AnimationHolder anim_climbing = AnimationHolder.EMPTY;
+    public AnimationHolder anim_climbing_idle = AnimationHolder.EMPTY;
+    public AnimationHolder anim_sprint_stop = AnimationHolder.EMPTY;
+    public AnimationHolder anim_fence_idle = AnimationHolder.EMPTY;
+    public AnimationHolder anim_fence_walk = AnimationHolder.EMPTY;
+    public AnimationHolder anim_edge_idle = AnimationHolder.EMPTY;
+    public AnimationHolder anim_elytra_fly = AnimationHolder.EMPTY;
+    public AnimationHolder anim_flint_and_steel = AnimationHolder.EMPTY;
+    public AnimationHolder anim_flint_and_steel_sneak = AnimationHolder.EMPTY;
+    public AnimationHolder anim_boat_idle = AnimationHolder.EMPTY;
+    public AnimationHolder anim_boat_left_paddle = AnimationHolder.EMPTY;
+    public AnimationHolder anim_boat_right_paddle = AnimationHolder.EMPTY;
+    public AnimationHolder anim_boat_forward = AnimationHolder.EMPTY;
+    public AnimationHolder anim_rolling = AnimationHolder.EMPTY;
+    public AnimationHolder anim_jump[] = new AnimationHolder[2];
+    public AnimationHolder anim_fall[] = new AnimationHolder[2];
+    public AnimationHolder anim_punch[] = new AnimationHolder[2];
+    public AnimationHolder anim_punch_sneaking[] = new AnimationHolder[2];
+    public AnimationHolder anim_sword_swing[] = new AnimationHolder[2];
+    public AnimationHolder anim_sword_swing_sneak[] = new AnimationHolder[2];
 
     public int punch_index = 0;
     public int jump_index = 0;
-    
 
     public float leanAmount = 0;
     public float leanMultiplier = 1;
@@ -119,60 +119,48 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
     private void init(ClientLevel level, GameProfile profile, CallbackInfo info) {
         PlayerAnimationAccess.getPlayerAnimLayer((AbstractClientPlayer) (Object) this).addAnimLayer(850, modAnimationContainer);
 
-        anim_idle = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "idle"));
-        anim_fall[0] = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "fall_first"));
-        anim_fall[1] = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "fall_second"));
-        anim_jump[0] = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "jump_first"));
-        anim_jump[1] = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "jump_second"));
-        anim_sneak_idle = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "sneak_idle"));
-        anim_sneak_walk = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "sneak_walk"));
-        anim_walk = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "walking"));
-        anim_run = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "running"));
-        anim_turn_right = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "turn_right"));
-        anim_turn_left = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "turn_left"));
-        anim_punch[0] = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "punch_right"));
-        anim_punch[1] = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "punch_left"));
-        anim_punch_sneaking[0] = PlayerAnimationRegistry
-                .getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "punch_right_sneak"));
-        anim_punch_sneaking[1] = PlayerAnimationRegistry
-                .getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "punch_left_sneak"));
+        var cfg = AnimationOverhaul.CONFIG.enabled_animations;
 
-        anim_sword_swing[0] = PlayerAnimationRegistry
-                .getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "sword_swing_first"));
-        anim_sword_swing[1] = PlayerAnimationRegistry
-                .getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "sword_swing_second"));
-
-        anim_sword_swing_sneak[0] = PlayerAnimationRegistry
-                .getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "sword_swing_sneak_first"));
-        anim_sword_swing_sneak[1] = PlayerAnimationRegistry
-                .getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "sword_swing_sneak_second"));
-
-        anim_falling = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "falling"));
-        anim_landing = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "landing"));
-        anim_swimming = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "swimming"));
-        anim_swim_idle = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "swim_idle"));
-        anim_crawl_idle = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "crawl_idle"));
-        anim_crawling = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "crawling"));
-        anim_eating = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "eating"));
-        anim_climbing = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "climbing"));
-        anim_climbing_idle = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "climbing_idle"));
-        anim_sprint_stop = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "sprint_stop"));
-        anim_fence_idle = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "fence_idle"));
-        anim_fence_walk = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "fence_walk"));
-        anim_edge_idle = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "edge_idle"));
-        anim_elytra_fly = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "elytra_fly"));
-        anim_flint_and_steel = PlayerAnimationRegistry
-                .getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "flint_and_steel"));
-        anim_flint_and_steel_sneak = PlayerAnimationRegistry
-                .getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "flint_and_steel_sneak"));
-        anim_boat_idle = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "boat_idle"));
-        anim_boat_forward = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "boat_forward"));
-        anim_boat_right_paddle = PlayerAnimationRegistry
-                .getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "boat_right_paddle"));
-        anim_boat_left_paddle = PlayerAnimationRegistry
-                .getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "boat_left_paddle"));
-        anim_rolling = PlayerAnimationRegistry.getAnimation(new ResourceLocation(AnimationOverhaul.MODID, "rolling"));
-
+        anim_idle = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "idle"), cfg.idle);
+        anim_fall[0] = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "fall_first"), cfg.fall);
+        anim_fall[1] = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "fall_second"), cfg.fall);
+        anim_jump[0] = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "jump_first"), cfg.jump);
+        anim_jump[1] = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "jump_second"), cfg.jump);
+        anim_sneak_idle = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "sneak_idle"), cfg.sneak_idle);
+        anim_sneak_walk = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "sneak_walk"), cfg.sneak_walk);
+        anim_walk = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "walking"), cfg.walk);
+        anim_run = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "running"), cfg.run);
+        anim_turn_right = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "turn_right"), cfg.turn_right);
+        anim_turn_left = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "turn_left"), cfg.turn_left);
+        anim_punch[0] = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "punch_right"), cfg.punch);
+        anim_punch[1] = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "punch_left"), cfg.punch);
+        anim_punch_sneaking[0] = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "punch_right_sneak"), cfg.punch_sneaking);
+        anim_punch_sneaking[1] = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "punch_left_sneak"), cfg.punch_sneaking);
+        anim_sword_swing[0] = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "sword_swing_first"), cfg.sword_swing);
+        anim_sword_swing[1] = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "sword_swing_second"), cfg.sword_swing);
+        anim_sword_swing_sneak[0] = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "sword_swing_sneak_first"), cfg.sword_swing_sneak);
+        anim_sword_swing_sneak[1] = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "sword_swing_sneak_second"), cfg.sword_swing_sneak);
+        anim_falling = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "falling"), cfg.falling);
+        anim_landing = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "landing"), cfg.landing);
+        anim_swimming = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "swimming"), cfg.swimming);
+        anim_swim_idle = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "swim_idle"), cfg.swim_idle);
+        anim_crawl_idle = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "crawl_idle"), cfg.crawl_idle);
+        anim_crawling = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "crawling"), cfg.crawling);
+        anim_eating = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "eating"), cfg.eating);
+        anim_climbing = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "climbing"), cfg.climbing);
+        anim_climbing_idle = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "climbing_idle"), cfg.climbing_idle);
+        anim_sprint_stop = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "sprint_stop"), cfg.sprint_stop);
+        anim_fence_idle = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "fence_idle"), cfg.fence_idle);
+        anim_fence_walk = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "fence_walk"), cfg.fence_walk);
+        anim_edge_idle = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "edge_idle"), cfg.edge_idle);
+        anim_elytra_fly = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "elytra_fly"), cfg.elytra_fly);
+        anim_flint_and_steel = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "flint_and_steel"), cfg.flint_and_steel);
+        anim_flint_and_steel_sneak = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "flint_and_steel_sneak"), cfg.flint_and_steel_sneak);
+        anim_boat_idle = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "boat_idle"), cfg.boat_idle);
+        anim_boat_forward = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "boat_forward"), cfg.boat_forward);
+        anim_boat_right_paddle = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "boat_right_paddle"), cfg.boat_right_paddle);
+        anim_boat_left_paddle = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "boat_left_paddle"), cfg.boat_left_paddle);
+        anim_rolling = new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "rolling"), cfg.rolling);
     }
 
     public float turnDelta = 0;
@@ -249,77 +237,77 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
         if (!this.swinging || this.swingTime >= this.getCurrentSwingDuration() / 2 || this.swingTime < 0) {
 
             if (isPassenger() && getVehicle() instanceof Boat) {
-                anim = anim_boat_idle;
+                anim = anim_boat_idle.getAnimation();
                 boolean left_paddle = ((Boat) getVehicle()).getPaddleState(0);
                 boolean right_paddle = ((Boat) getVehicle()).getPaddleState(1);
 
                 if (left_paddle && right_paddle) {
-                    anim = anim_boat_forward;
+                    anim = anim_boat_forward.getAnimation();
                 } else if (left_paddle) {
-                    anim = anim_boat_left_paddle;
+                    anim = anim_boat_left_paddle.getAnimation();
                 } else if (right_paddle) {
-                    anim = anim_boat_right_paddle;
+                    anim = anim_boat_right_paddle.getAnimation();
                 }
             } else if (level.getBlockState(blockPosition()).getBlock() instanceof LadderBlock && !onGround()
                     && !jumping) {
-                anim = anim_climbing_idle;
+                anim = anim_climbing_idle.getAnimation();
                 if (getDeltaMovement().y > 0) {
-                    anim = anim_climbing;
+                    anim = anim_climbing.getAnimation();
                 }
             } else if (isUsingItem() && getMainHandItem().getItem().isEdible()) {
-                anim = anim_eating;
+                anim = anim_eating.getAnimation();
             } else if (isFallFlying()) {
-                anim = anim_elytra_fly;
+                anim = anim_elytra_fly.getAnimation();
             } else if (onGround() || onGroundInWater) {
-                anim = anim_idle;
+                anim = anim_idle.getAnimation();
                 if (onFence) {
-                    anim = anim_fence_idle;
+                    anim = anim_fence_idle.getAnimation();
                 } else if (onEdge) {
-                    anim = anim_edge_idle;
+                    anim = anim_edge_idle.getAnimation();
                 }
 
                 if (turnDelta != 0 && !onEdge) {
-                    anim = anim_turn_right;
+                    anim = anim_turn_right.getAnimation();
                     if (turnDelta < 0) {
-                        anim = anim_turn_left;
+                        anim = anim_turn_left.getAnimation();
                     }
                 }
 
                 if ((isInWaterOrBubble() || isInLava()) && !onGroundInWater) {
                     if (this.isSwimming() || this.isSprinting()) {
-                        anim = anim_swimming;
+                        anim = anim_swimming.getAnimation();
                     }
                 } else if (isVisuallyCrawling()) {
                     if (isWalking) {
-                        if (currentAnimation == anim_crawl_idle) {
+                        if (currentAnimation == anim_crawl_idle.getAnimation()) {
                             fade_time = 0;
                         }
-                        anim = anim_crawling;
+                        anim = anim_crawling.getAnimation();
                     } else {
-                        if (currentAnimation == anim_crawling) {
+                        if (currentAnimation == anim_crawling.getAnimation()) {
                             fade_time = 0;
                         }
-                        anim = anim_crawl_idle;
+                        anim = anim_crawl_idle.getAnimation();
                     }
                 } else if (isShiftKeyDown()) {
-                    anim = anim_sneak_idle;
+                    anim = anim_sneak_idle.getAnimation();
 
                     if (isWalking || turnDelta != 0) {
-                        anim = anim_sneak_walk;
+                        anim = anim_sneak_walk.getAnimation();
                     }
                 } else {
                     if (isWalking) {
                         if (momentum > 1 && !isWalkingForwards) {
-                            anim = anim_sprint_stop;
+                            anim = anim_sprint_stop.getAnimation();
                             fade_time = 2;
                         } else {
                             if (isSprinting() && !isUsingItem()) {
-                                anim = anim_run;
+                                anim = anim_run.getAnimation();
                                 anim_speed = 1.0f;
                             } else {
-                                anim = anim_walk;
+                                anim = anim_walk.getAnimation();
                                 if (onFence) {
-                                    anim = anim_fence_walk;
+                                    anim = anim_fence_walk.getAnimation();
                                 }
                             }
                         }
@@ -329,16 +317,16 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
 
                 if (isInWaterOrBubble() || isInLava()) {
                     if (this.isSwimming() || this.isSprinting()) {
-                        anim = anim_swimming;
+                        anim = anim_swimming.getAnimation();
                     } else {
-                        anim = anim_swim_idle;
+                        anim = anim_swim_idle.getAnimation();
                     }
                 } else {
                     if (this.fallDistance > 1) {
                         if (this.fallDistance > 3) {
-                            anim = anim_falling;
+                            anim = anim_falling.getAnimation();
                         } else {
-                            anim = anim_fall[jump_index];
+                            anim = anim_fall[jump_index].getAnimation();
                         }
                     }
                 }
@@ -355,10 +343,11 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
                         action == UseAnim.DRINK) {
                     disableArmAnimations();
                 } else if (getUseItem().getItem() instanceof FlintAndSteelItem) {
-                    anim = anim_flint_and_steel;
+                    anim = anim_flint_and_steel.getAnimation();
                     if (isShiftKeyDown()) {
-                        anim = anim_flint_and_steel_sneak;
+                        anim = anim_flint_and_steel_sneak.getAnimation();
                     }
+
                     playAnimation(anim, anim_speed, fade_time);
                 }
             }
@@ -377,7 +366,7 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
         if (fallDistance > 0) {
             if (onGround) {
                 if (fallDistance >= 3) {
-                    playAnimation(anim_landing, 1.0f, 0);
+                    playAnimation(anim_landing.getAnimation(), 1.0f, 0);
                 }
                 realSquash = -fallDistance / 10.0f;
             } else {
@@ -472,7 +461,7 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
         jump_index++;
         jump_index %= 2;
 
-        playAnimation(anim_jump[jump_index], 1.0f, 0);
+        playAnimation(anim_jump[jump_index].getAnimation(), 1.0f, 0);
     }
 
     @Override
@@ -520,15 +509,15 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
 
             if (isShiftKeyDown()) {
                 if (sword_animations) {
-                    playAnimation(anim_sword_swing_sneak[punch_index], 1.0f, 0);
+                    playAnimation(anim_sword_swing_sneak[punch_index].getAnimation(), 1.0f, 0);
                 } else {
-                    playAnimation(anim_punch_sneaking[punch_index], 1.0f, 0);
+                    playAnimation(anim_punch_sneaking[punch_index].getAnimation(), 1.0f, 0);
                 }
             } else {
                 if (sword_animations) {
-                    playAnimation(anim_sword_swing[punch_index], 1.0f, 0);
+                    playAnimation(anim_sword_swing[punch_index].getAnimation(), 1.0f, 0);
                 } else {
-                    playAnimation(anim_punch[punch_index], 1.0f, 0);
+                    playAnimation(anim_punch[punch_index].getAnimation(), 1.0f, 0);
                 }
             }
         }

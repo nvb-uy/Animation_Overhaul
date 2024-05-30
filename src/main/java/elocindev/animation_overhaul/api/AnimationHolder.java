@@ -7,6 +7,8 @@ import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import net.minecraft.resources.ResourceLocation;
 
 public class AnimationHolder {
+    public static AnimationHolder EMPTY = new AnimationHolder((KeyframeAnimation) null, false);
+
     private boolean isEnabled;
     @Nullable
     private KeyframeAnimation animation;
@@ -20,7 +22,11 @@ public class AnimationHolder {
         this.animation = animation;
     }
 
+    public AnimationHolder() { this.isEnabled = false; this.animation = null; }
+
     public KeyframeAnimation getAnimation() {
+        if (!isEnabled) return null;
+
         return animation;
     }
 
