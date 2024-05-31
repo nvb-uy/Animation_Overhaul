@@ -27,7 +27,8 @@
   "depends": {
     "fabricloader": ">=0.14.0",
     "minecraft": "${mcVersionStr}",
-    "java": ">=${java}"
+    "java": ">=${java}",
+    "necronomion": ">=1.4.2"
   },
   "recommends": {
   }
