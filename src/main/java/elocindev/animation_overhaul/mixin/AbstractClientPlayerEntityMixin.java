@@ -229,126 +229,77 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
             realLeanMultiplier = 1;
         }
         
-        KeyframeAnimation anim = null;
+        AnimationHolder animationToPlay = AnimationHolder.EMPTY;
 
-        float anim_speed = 1.0f;
-        int fade_time = 5;
-
-        boolean onGroundInWater = isUnderWater() 
-                && this.getBlockStateOn().getCollisionShape(this.level(), this.blockPosition()).isEmpty();
+        boolean onGroundInWater = isUnderWater() && this.getBlockStateOn().getCollisionShape(this.level(), this.blockPosition()).isEmpty();
         
         if (!this.swinging || this.swingTime >= this.getCurrentSwingDuration() / 2 || this.swingTime < 0) {
-
             if (isPassenger() && getVehicle() instanceof Boat) {
-                anim = anim_boat_idle.getAnimation();
-                anim_speed = anim_boat_idle.getSpeed();
-                fade_time = anim_boat_idle.getFade();
+                animationToPlay = anim_boat_idle;
                 
                 boolean left_paddle = ((Boat) getVehicle()).getPaddleState(0);
                 boolean right_paddle = ((Boat) getVehicle()).getPaddleState(1);
 
                 if (left_paddle && right_paddle) {
-                    anim = anim_boat_forward.getAnimation();
-                    anim_speed = anim_boat_forward.getSpeed();
-                    fade_time = anim_boat_forward.getFade();
+                    animationToPlay = anim_boat_forward;
                 } else if (left_paddle) {
-                    anim = anim_boat_left_paddle.getAnimation();
-                    anim_speed = anim_boat_left_paddle.getSpeed();
-                    fade_time = anim_boat_left_paddle.getFade();
+                    animationToPlay = anim_boat_left_paddle;
                 } else if (right_paddle) {
-                    anim = anim_boat_right_paddle.getAnimation();
-                    anim_speed = anim_boat_right_paddle.getSpeed();
-                    fade_time = anim_boat_right_paddle.getFade();
+                    animationToPlay = anim_boat_right_paddle;
                 }
             } else if (level.getBlockState(blockPosition()).getBlock() instanceof LadderBlock && !onGround() && !jumping) {
-                anim = anim_climbing_idle.getAnimation();
-                anim_speed = anim_climbing_idle.getSpeed();
-                fade_time = anim_climbing_idle.getFade();
+                animationToPlay = anim_climbing_idle;
 
                 if (getDeltaMovement().y > 0) {
-                    anim = anim_climbing.getAnimation();
-                    anim_speed = anim_climbing.getSpeed();
-                    
+                    animationToPlay = anim_climbing;                    
                 }
             } else if (isUsingItem() && getMainHandItem().getItem().isEdible()) {
-                anim = anim_eating.getAnimation();
-                anim_speed = anim_eating.getSpeed();
-                fade_time = anim_eating.getFade();
+                animationToPlay = anim_eating;
             } else if (isFallFlying()) {
-                anim = anim_elytra_fly.getAnimation();
-                anim_speed = anim_elytra_fly.getSpeed();
-                fade_time = anim_elytra_fly.getFade();
+                animationToPlay = anim_elytra_fly;
             } else if (onGround() || onGroundInWater) {
-                anim = anim_idle.getAnimation();
-                anim_speed = anim_idle.getSpeed();
-                fade_time = anim_idle.getFade();
+                animationToPlay = anim_idle;
 
                 if (onFence) {
-                    anim = anim_fence_idle.getAnimation();
-                    anim_speed = anim_fence_idle.getSpeed();
-                    fade_time = anim_fence_idle.getFade();
+                    animationToPlay = anim_fence_idle;
                 } else if (onEdge) {
-                    anim = anim_edge_idle.getAnimation();
-                    anim_speed = anim_edge_idle.getSpeed();
-                    fade_time = anim_edge_idle.getFade();
+                    animationToPlay = anim_edge_idle;
                 }
 
                 if (turnDelta != 0 && !onEdge) {
-                    anim = anim_turn_right.getAnimation();
-                    anim_speed = anim_turn_right.getSpeed();
-                    fade_time = anim_turn_right.getFade();
+                    animationToPlay = anim_turn_right;
                     if (turnDelta < 0) {
-                        anim = anim_turn_left.getAnimation();
-                        anim_speed = anim_turn_left.getSpeed();
-                        fade_time = anim_turn_left.getFade();
+                        animationToPlay = anim_turn_left;
                     }
                 }
 
                 if ((isInWaterOrBubble() || isInLava()) && !onGroundInWater) {
                     if (this.isSwimming() || this.isSprinting()) {
-                        anim = anim_swimming.getAnimation();
-                        anim_speed = anim_swimming.getSpeed();
-                        fade_time = anim_swimming.getFade();
+                        animationToPlay = anim_swimming;
                     }
                 } else if (isVisuallyCrawling()) {
                     if (isWalking) {
-                        anim = anim_crawling.getAnimation();
-                        anim_speed = anim_crawling.getSpeed();
-                        fade_time = anim_crawling.getFade();
+                        animationToPlay = anim_crawling;
                     } else {
-                        anim = anim_crawl_idle.getAnimation();
-                        anim_speed = anim_crawl_idle.getSpeed();
-                        fade_time = anim_crawl_idle.getFade();
+                        animationToPlay = anim_crawl_idle;
                     }
                 } else if (isShiftKeyDown()) {
-                    anim = anim_sneak_idle.getAnimation();
-                    anim_speed = anim_sneak_idle.getSpeed();
-                    fade_time = anim_sneak_idle.getFade();
+                    animationToPlay = anim_sneak_idle;
 
                     if (isWalking || turnDelta != 0) {
-                        anim = anim_sneak_walk.getAnimation();
-                        anim_speed = anim_sneak_walk.getSpeed();
-                        fade_time = anim_sneak_walk.getFade();
+                        animationToPlay = anim_sneak_walk;
                     }
                 } else {
                     if (isWalking) {
                         if (momentum > 1 && !isWalkingForwards) {
-                            anim = anim_sprint_stop.getAnimation();
-                            anim_speed = anim_sprint_stop.getSpeed();
-                            fade_time = anim_sprint_stop.getFade();                            
+                            animationToPlay = anim_sprint_stop;                    
                         } else {
                             if (isSprinting() && !isUsingItem()) {
-                                anim = anim_run.getAnimation();
-                                anim_speed = 1.0f;
-                                fade_time = anim_run.getFade();
+                                animationToPlay = anim_run;
                             } else {
-                                anim = anim_walk.getAnimation();
-                                anim_speed = anim_walk.getSpeed();
-                                fade_time = anim_walk.getFade();
+                                animationToPlay = anim_walk;
                                 if (onFence) {
-                                    anim = anim_fence_walk.getAnimation();
-                                    anim_speed = anim_fence_walk.getSpeed();
-                                    fade_time = anim_fence_walk.getFade();
+                                    animationToPlay = anim_fence_walk;
                                 }
                             }
                         }
@@ -358,31 +309,23 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
 
                 if (isInWaterOrBubble() || isInLava()) {
                     if (this.isSwimming() || this.isSprinting()) {
-                        anim = anim_swimming.getAnimation();
-                        anim_speed = anim_swimming.getSpeed();
-                        fade_time = anim_swimming.getFade();
+                        animationToPlay = anim_swimming;
                     } else {
-                        anim = anim_swim_idle.getAnimation();
-                        anim_speed = anim_swim_idle.getSpeed();
-                        fade_time = anim_swim_idle.getFade();
+                        animationToPlay = anim_swim_idle;
                     }
                 } else {
                     if (this.fallDistance > 1) {
                         if (this.fallDistance > 3) {
-                            anim = anim_falling.getAnimation();
-                            anim_speed = anim_falling.getSpeed();
-                            fade_time = anim_falling.getFade();
+                            animationToPlay = anim_falling;
                         } else {
-                            anim = anim_fall[jump_index].getAnimation();
-                            anim_speed = anim_fall[jump_index].getSpeed();
-                            fade_time = anim_fall[jump_index].getFade();
+                            animationToPlay = anim_fall[jump_index];
                         }
                     }
                 }
             }
         }
         
-        playAnimation(anim, anim_speed, fade_time);
+        playAnimation(animationToPlay.getAnimation(), animationToPlay.getSpeed(), animationToPlay.getFade());
 
         if (this.isUsingItem()) {
             if (this.getUseItem() != null) {
@@ -392,17 +335,13 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
                         action == UseAnim.DRINK) {
                     disableArmAnimations();
                 } else if (getUseItem().getItem() instanceof FlintAndSteelItem) {
-                    anim = anim_flint_and_steel.getAnimation();
-                    anim_speed = anim_flint_and_steel.getSpeed();
-                    fade_time = anim_flint_and_steel.getFade();
+                    animationToPlay = anim_flint_and_steel;
 
                     if (isShiftKeyDown()) {
-                        anim = anim_flint_and_steel_sneak.getAnimation();
-                        anim_speed = anim_flint_and_steel_sneak.getSpeed();
-                        fade_time = anim_flint_and_steel_sneak.getFade();
+                        animationToPlay = anim_flint_and_steel_sneak;
                     }
 
-                    playAnimation(anim, anim_speed, fade_time);
+                    playAnimation(animationToPlay.getAnimation(), animationToPlay.getSpeed(), animationToPlay.getFade());
                 }
             }
         } else {
