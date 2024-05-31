@@ -116,7 +116,12 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
     public float momentum = 0;
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void animation_overhaul$init(ClientLevel level, GameProfile profile, CallbackInfo info) {
+    private void animation_overhaul$init(ClientLevel level, GameProfile profile,
+        //#if MC==11902
+        //$$@org.jetbrains.annotations.Nullable net.minecraft.world.entity.player.ProfilePublicKey key,
+        //#endif
+        CallbackInfo info
+    ) {
         PlayerAnimationAccess.getPlayerAnimLayer((AbstractClientPlayer) (Object) this).addAnimLayer(850, modAnimationContainer);
 
         var cfg = AnimationOverhaul.CONFIG.enabled_animations;

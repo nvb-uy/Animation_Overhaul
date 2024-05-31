@@ -39,7 +39,7 @@ version = mod_version
 group = "elocindev.animation_overhaul"
 
 base {
-    archivesName.set("$archiveBase-${platform.loaderStr}-${getMcVersionStr()})")
+    archivesName.set("$archiveBase-${platform.loaderStr}-${getMcVersionStr()}")
 }
 
 loom.noServerRunConfigs()
@@ -100,7 +100,7 @@ dependencies {
     implementation("maven.modrinth:spell-engine:${spellengine_version}+1.20.1-fabric")
 
     implementation("org.joml:joml:1.10.5")
-    include("org.joml:joml:1.10.5")
+    //include("org.joml:joml:1.10.5")
 }
 
 tasks.processResources {
@@ -164,8 +164,8 @@ tasks {
                 attributes(
                     mapOf(
                         "ModSide" to "CLIENT",
-                        "TweakOrder" to "0",
-                        "TweakClass" to "org.spongepowered.asm.launch.MixinTweaker",
+                        // "TweakOrder" to "0",
+                        // "TweakClass" to "org.spongepowered.asm.launch.MixinTweaker",
                         "ForceLoadAsMod" to true
                     )
                 )
