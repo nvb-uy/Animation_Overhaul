@@ -28,7 +28,7 @@
     "fabricloader": ">=0.14.0",
     "minecraft": "${mcVersionStr}",
     "java": ">=${java}",
-    "necronomion": ">=1.4.2"
+    "necronomicon": ">=1.4.2"
   },
   "recommends": {
   }
