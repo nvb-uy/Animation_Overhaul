@@ -20,7 +20,9 @@ val mod_version: String by project
 val mod_id: String by project
 
 val necronomicon_version: String by project
-val playeranimator_version: String by project
+val playeranimator_version_12001: String by project
+val playeranimator_version_11902: String by project
+
 val spellengine_version: String by project
 
 preprocess {
@@ -76,13 +78,23 @@ dependencies {
     if (project.platform.isFabric) {
         modImplementation("maven.modrinth:necronomicon:${necronomicon_version}-fabric")
         
-        modImplementation("maven.modrinth:playeranimator:${playeranimator_version}-fabric")
-        include("maven.modrinth:playeranimator:${playeranimator_version}-fabric")
+        modImplementation("maven.modrinth:playeranimator:${playeranimator_version_12001}-fabric")
+
+        if (project.platform.mcMinor == 20) {
+            include("maven.modrinth:playeranimator:${playeranimator_version_12001}-fabric")
+        } else {
+            include("maven.modrinth:playeranimator:${playeranimator_version_11902}-fabric")
+        }
     } else if (project.platform.isForge) {
         implementation("maven.modrinth:necronomicon:${necronomicon_version}-forge")
 
-        implementation("maven.modrinth:playeranimator:${playeranimator_version}-forge")
-        include("maven.modrinth:playeranimator:${playeranimator_version}-forge")
+        implementation("maven.modrinth:playeranimator:${playeranimator_version_12001}-forge")
+        
+        if (project.platform.mcMinor == 20) {
+            include("maven.modrinth:playeranimator:${playeranimator_version_12001}-forge")
+        } else {
+            include("maven.modrinth:playeranimator:${playeranimator_version_11902}-forge")
+        }
     }
 
     implementation("maven.modrinth:spell-engine:${spellengine_version}+1.20.1-fabric")
