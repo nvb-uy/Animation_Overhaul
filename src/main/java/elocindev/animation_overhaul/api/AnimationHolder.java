@@ -35,6 +35,7 @@ public class AnimationHolder {
 
     public AnimationHolder() { this.isEnabled = false; this.animation = null; }
 
+    @Nullable
     public KeyframeAnimation getAnimation() {
         if (!isEnabled) return null;
 
