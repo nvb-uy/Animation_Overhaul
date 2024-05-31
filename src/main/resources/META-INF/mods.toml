@@ -8,10 +8,10 @@ modId="animation_overhaul"
 version="${version}"
 displayName="Animation Overhaul"
 authors="ElocinDev"
-description="Replaces heart particles with random pride flags."
+description="Overhauls player animations."
 logoFile="logo.png"
 
-[[dependencies.prideful_animals]]
+[[dependencies.animation_overhaul]]
 modId="minecraft"
 mandatory=true
 versionRange="[1.19,)"
