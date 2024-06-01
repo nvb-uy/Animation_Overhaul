@@ -12,12 +12,15 @@ public class AOAnimationInstance {
         public AnimationProperties turn_right = new AnimationProperties();
         public AnimationProperties turn_left = new AnimationProperties();
         public AnimationProperties falling = new AnimationProperties();
+        public AnimationProperties slow_falling = new AnimationProperties().setSpeed(0.5f);
+        public AnimationProperties fall = new AnimationProperties();
         public AnimationProperties landing = new AnimationProperties();
         public AnimationProperties swimming = new AnimationProperties();
         public AnimationProperties swim_idle = new AnimationProperties();
         public AnimationProperties crawl_idle = new AnimationProperties().setFade(0);
         public AnimationProperties crawling = new AnimationProperties().setFade(0);
         public AnimationProperties eating = new AnimationProperties();
+        public AnimationProperties drinking = new AnimationProperties();
         public AnimationProperties climbing = new AnimationProperties();
         public AnimationProperties climbing_idle = new AnimationProperties();
         public AnimationProperties sprint_stop = new AnimationProperties().setFade(2);
@@ -33,7 +36,6 @@ public class AOAnimationInstance {
         public AnimationProperties boat_forward = new AnimationProperties();
         public AnimationProperties rolling = new AnimationProperties();
         public AnimationProperties jump = new AnimationProperties();
-        public AnimationProperties fall = new AnimationProperties();
         public AnimationProperties punch = new AnimationProperties();
         public AnimationProperties punch_sneaking = new AnimationProperties();
         public AnimationProperties sword_swing = new AnimationProperties();
