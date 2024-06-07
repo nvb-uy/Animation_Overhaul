@@ -194,6 +194,10 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
     public void tick() {
         super.tick();
 
+        if (isPassenger() && !(getVehicle() instanceof Boat)) {
+            return;
+        }
+
         tickCounter++;
 
         if (tickCounter == 20) {
@@ -385,6 +389,9 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
             enableArmAnimations();
         }
 
+        // check if the hand is right or left
+        System.out.println(this.getMainArm());
+
         lastPos = new Vec3(pos.x, pos.y, pos.z);
         lastOnGround = onGround;
     }
@@ -501,11 +508,6 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
 
         if (anim != null && anim.isEnabled())
             playAnimation(CONTAINER, anim.getAnimation(), anim.getSpeed(), anim.getFade());
-    }
-
-    @Override
-    public void jumpFromGround() {
-        super.jumpFromGround();
     }
 
     private int getCurrentSwingDuration() {
