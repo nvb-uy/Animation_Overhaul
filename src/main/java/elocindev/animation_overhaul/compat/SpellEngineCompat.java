@@ -7,7 +7,7 @@ import net.spell_engine.internals.casting.SpellCasterClient;
 public class SpellEngineCompat {
     public static boolean shouldLetAnimate(AbstractClientPlayer player) {
         if (PlatformUtility.isModLoaded("spell_engine")) {
-            SpellCasterClient caster = (SpellCasterClient) player;
+            if (player instanceof SpellCasterClient caster)
 
             if (caster.isCastingSpell() || caster.isBeaming()) return true;
         }

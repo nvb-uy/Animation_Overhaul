@@ -183,6 +183,60 @@ tasks {
     }
 
     clean { delete("${project.rootDir}/jars") }
+
+    project.modrinth {
+        token.set(System.getenv("MODRINTH_TOKEN"))
+        projectId.set("jCikwMS7")
+        versionNumber.set(mod_version)
+        versionName.set("[${getMcVersionStr()}-${platform.loaderStr}] Animation Overhaul v$mod_version")
+        uploadFile.set(remapJar.get().archiveFile as Any)
+        gameVersions.addAll(getMcVersionList())
+        if (platform.isFabric) {
+            loaders.add("fabric")
+            loaders.add("quilt")
+        } else if (platform.isForge) {
+            loaders.add("forge")
+            if (platform.mcMinor >= 20) loaders.add("neoforge")
+        }
+        changelog.set(file("../../changelog.md").readText())
+        dependencies {
+            required.project("necronomicon")
+        }
+    }
+
+    project.curseforge {
+        project(closureOf<CurseProject> {
+            apiKey = System.getenv("CURSEFORGE_TOKEN")
+            id = "1028436"
+            changelog = file("../../changelog.md")
+            changelogType = "markdown"
+            relations(closureOf<CurseRelation> {
+                requiredDependency("necronomicon")
+            })
+            gameVersionStrings.addAll(getMcVersionList())
+            if (platform.isFabric) {
+                addGameVersion("Fabric")
+                addGameVersion("Quilt")
+            } else if (platform.isForge) {
+                addGameVersion("Forge")
+                if (platform.mcMinor >= 20) addGameVersion("NeoForge")
+            }
+            releaseType = "release"
+            mainArtifact(remapJar.get().archiveFile, closureOf<CurseArtifact> {
+                displayName = "[${getMcVersionStr()}-${platform.loaderStr}] Animation Overhaul v$mod_version"
+            })
+        })
+        options(closureOf<Options> {
+            javaVersionAutoDetect = false
+            javaIntegration = false
+            forgeGradleIntegration = false
+        })
+    }
+
+    register("publish") {
+        // dependsOn(modrinth)
+        dependsOn(curseforge)
+    }
 }
 
 fun getMcVersionStr(): String {

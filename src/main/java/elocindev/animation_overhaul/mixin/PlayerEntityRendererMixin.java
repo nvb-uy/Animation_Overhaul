@@ -41,7 +41,7 @@ public abstract class PlayerEntityRendererMixin
         MultiBufferSource vertexConsumerProvider, int i, CallbackInfo ci) {
 
         Minecraft mc = Minecraft.getInstance();
-        if (mc.gameRenderer == null) return;
+        if (mc.gameRenderer == null || player != mc.player) return;
 
         if (!mc.gameRenderer.getMainCamera().isDetached()
                 && player == mc.player) {
