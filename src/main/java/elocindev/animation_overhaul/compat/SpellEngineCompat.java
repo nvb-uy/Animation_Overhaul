@@ -5,7 +5,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.spell_engine.internals.casting.SpellCasterClient;
 
 public class SpellEngineCompat {
-    public static boolean shouldLetAnimate(AbstractClientPlayer player) {
+    public static boolean shouldNotLetAnimate(AbstractClientPlayer player) {
         if (PlatformUtility.isModLoaded("spell_engine")) {
             if (player instanceof SpellCasterClient caster)
 

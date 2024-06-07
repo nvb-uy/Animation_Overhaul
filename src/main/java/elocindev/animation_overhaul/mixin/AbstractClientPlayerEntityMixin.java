@@ -13,7 +13,8 @@ import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import elocindev.animation_overhaul.AnimationOverhaul;
 import elocindev.animation_overhaul.api.ILeanablePlayer;
-import elocindev.animation_overhaul.util.PlatformUtility;
+import elocindev.animation_overhaul.compat.CompatibilityLoader;
+import elocindev.animation_overhaul.config.AnimationsConfig;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
@@ -53,7 +54,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class AbstractClientPlayerEntityMixin extends Player implements ILeanablePlayer {
 
     @Unique
-    private final ModifierLayer<IAnimation> modAnimationContainer = new ModifierLayer<>();
+    private final ModifierLayer<IAnimation> CONTAINER = new ModifierLayer<>();
 
     public AbstractClientPlayerEntityMixin(Level level, BlockPos pos, float yaw, GameProfile gameProfile
         //#if MC==11902
@@ -125,6 +126,8 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
         return holder;
     }
 
+    public AnimationsConfig ANIMS = AnimationOverhaul.ANIM_CONFIG;
+
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void animation_overhaul$init(ClientLevel level, GameProfile profile,
         //#if MC==11902
@@ -132,9 +135,9 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
         //#endif
         CallbackInfo info
     ) {
-        PlayerAnimationAccess.getPlayerAnimLayer((AbstractClientPlayer) (Object) this).addAnimLayer(850, modAnimationContainer);
+        PlayerAnimationAccess.getPlayerAnimLayer((AbstractClientPlayer) (Object) this).addAnimLayer(1, CONTAINER);
 
-        var cfg = AnimationOverhaul.CONFIG.enabled_animations;
+        var cfg = ANIMS.enabled_animations;
 
         anim_idle = validateHolder(new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "idle"), cfg.idle.enabled));
         anim_fall[0] = validateHolder(new AnimationHolder(new ResourceLocation(AnimationOverhaul.MODID, "fall_first"), cfg.fall.enabled));
@@ -336,29 +339,30 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
                 }
             } else {
 
-                if (isInWaterOrBubble() || isInLava()) {
-                    if (this.isSwimming() || this.isSprinting()) {
-                        animationToPlay = anim_swimming;
+                if (this.fallDistance > 1) {
+                    if (this.fallDistance > 3) {
+                        animationToPlay = anim_falling;
                     } else {
-                        animationToPlay = anim_swim_idle;
+                        animationToPlay = anim_fall[jump_index];
                     }
+                }
+
+                if (!onGround() && getDeltaMovement().y < 0 && hasSlowFall) {
+                    animationToPlay = anim_slow_falling;
+                }
+            }
+            if (isInWaterOrBubble() || isInLava()) {
+                if (this.isSwimming() || this.isSprinting()) {
+                    animationToPlay = anim_swimming;
                 } else {
-                    if (this.fallDistance > 1) {
-                        if (this.fallDistance > 3) {
-                            animationToPlay = anim_falling;
-                        } else {
-                            animationToPlay = anim_fall[jump_index];
-                        }
-                    }
+                    animationToPlay = anim_swim_idle;
                 }
             }
         }
         
-        if (!onGround() && getDeltaMovement().y < 0 && hasSlowFall) {
-            animationToPlay = anim_slow_falling;
-        }
 
-        playAnimation(animationToPlay.getAnimation(), animationToPlay.getSpeed(), animationToPlay.getFade());
+        if (animationToPlay != null && animationToPlay.isEnabled())
+            playAnimation(animationToPlay.getAnimation(), animationToPlay.getSpeed(), animationToPlay.getFade());
 
         if (this.isUsingItem()) {
             if (this.getUseItem() != null) {
@@ -373,7 +377,8 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
                         animationToPlay = anim_flint_and_steel_sneak;
                     }
 
-                    playAnimation(animationToPlay.getAnimation(), animationToPlay.getSpeed(), animationToPlay.getFade());
+                    if (animationToPlay != null && animationToPlay.isEnabled())
+                        playAnimation(animationToPlay.getAnimation(), animationToPlay.getSpeed(), animationToPlay.getFade());
                 }
             }
         } else {
@@ -411,31 +416,36 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
     private boolean armAnimationsEnabled = true;
 
     public void playAnimation(KeyframeAnimation anim, float speed, int fade) {
+        playAnimation(CONTAINER, anim, speed, fade);
+    }
+
+    public void playAnimation(ModifierLayer<IAnimation> container, KeyframeAnimation anim, float speed, int fade) {
         if (currentAnimation == anim || anim == null)
             return;
 
         currentAnimation = anim;
-        ModifierLayer<IAnimation> animationContainer = modAnimationContainer;
-
         var builder = anim.mutableCopy();
         builder.leftArm.setEnabled(armAnimationsEnabled);
         builder.rightArm.setEnabled(armAnimationsEnabled);
         anim = builder.build();
 
         if (modified) {
-            animationContainer.removeModifier(0);
+            container.removeModifier(0);
         }
         modified = true;
-        animationContainer.addModifierBefore(new SpeedModifier(speed));
-        animationContainer.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(fade, Ease.LINEAR),
+        
+
+        container.addModifierBefore(new SpeedModifier(speed));
+        container.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(fade, Ease.LINEAR),
                 new KeyframeAnimationPlayer(anim));
-        animationContainer.setupAnim(1.0f / 20.0f);
+        
+        container.setupAnim(1.0f / 20.0f);
     }
 
     public void disableArmAnimations() {
         if (currentAnimation != null && armAnimationsEnabled) {
             armAnimationsEnabled = false;
-            ModifierLayer<IAnimation> animationContainer = modAnimationContainer;
+            ModifierLayer<IAnimation> animationContainer = CONTAINER;
 
             var builder = currentAnimation.mutableCopy();
 
@@ -461,7 +471,7 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
     public void enableArmAnimations() {
         if (currentAnimation != null && !armAnimationsEnabled) {
             armAnimationsEnabled = true;
-            ModifierLayer<IAnimation> animationContainer = modAnimationContainer;
+            ModifierLayer<IAnimation> animationContainer = CONTAINER;
 
             var builder = currentAnimation.mutableCopy();
             builder.leftArm.setEnabled(true);
@@ -488,8 +498,9 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
 
         AnimationHolder anim = anim_jump[jump_index];
 
-        if (anim != null)
-            playAnimation(anim.getAnimation(), anim.getSpeed(), anim.getFade());
+
+        if (anim != null && anim.isEnabled())
+            playAnimation(CONTAINER, anim.getAnimation(), anim.getSpeed(), anim.getFade());
     }
 
     @Override
@@ -523,31 +534,51 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
 
             boolean sword_animations = false;
 
-            if (PlatformUtility.isModLoaded("bettercombat")) {
+            if (CompatibilityLoader.BETTER_COMBAT) {
                 sword_animations = false;
             }
 
             if (stack != null) {
-                if (stack.getItem() instanceof SwordItem || stack.getItem() instanceof PickaxeItem ||
-                        stack.getItem() instanceof AxeItem || stack.getItem() instanceof HoeItem ||
-                        stack.getItem() instanceof ShovelItem || stack.getItem() instanceof FishingRodItem) {
+                if (stack.getItem() instanceof SwordItem) {
                     sword_animations = true;
+                } else if (stack.getItem() instanceof PickaxeItem ||
+                    stack.getItem() instanceof AxeItem || stack.getItem() instanceof HoeItem ||
+                    stack.getItem() instanceof ShovelItem || stack.getItem() instanceof FishingRodItem && isUsingItem()) {
+                    sword_animations = true;
+                    if (!AnimationOverhaul.ANIM_CONFIG.hands_behavior.mining) {
+                        disableArmAnimations();
+
+                        return;
+                    }
+                }
+            } else {
+                if (!AnimationOverhaul.ANIM_CONFIG.hands_behavior.punch) {
+                    disableArmAnimations();
+                
+                    return;
                 }
             }
 
+            AnimationHolder hand_anim = null;
+
             if (isShiftKeyDown()) {
                 if (sword_animations) {
-                    playAnimation(anim_sword_swing_sneak[punch_index].getAnimation(), 1.0f, 0);
+                    hand_anim = anim_sword_swing_sneak[punch_index];
                 } else {
-                    playAnimation(anim_punch_sneaking[punch_index].getAnimation(), 1.0f, 0);
+                    hand_anim = anim_punch_sneaking[punch_index];
                 }
             } else {
                 if (sword_animations) {
-                    playAnimation(anim_sword_swing[punch_index].getAnimation(), 1.0f, 0);
+                    hand_anim = anim_sword_swing[punch_index];
                 } else {
-                    playAnimation(anim_punch[punch_index].getAnimation(), 1.0f, 0);
+                    hand_anim = anim_punch[punch_index];
                 }
             }
+
+            if (!hand_anim.isEnabled()) disableArmAnimations();
+
+            if (hand_anim != null)
+                playAnimation(hand_anim.getAnimation(), 1.0f, 0);
         }
     }
 

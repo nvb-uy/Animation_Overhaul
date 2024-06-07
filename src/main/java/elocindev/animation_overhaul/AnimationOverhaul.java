@@ -3,8 +3,10 @@ package elocindev.animation_overhaul;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import elocindev.animation_overhaul.compat.CompatibilityLoader;
 import elocindev.animation_overhaul.config.AnimationsConfig;
-import elocindev.necronomicon.api.config.v1.NecConfigAPI;
+import elocindev.animation_overhaul.config.PlayerConfig;
+import elocindev.animation_overhaul.config.utils.ConfigLoader;
 
 //#if FABRIC==1
 
@@ -22,7 +24,10 @@ public class AnimationOverhaul
 //$$ {
 //#endif
 
-    public static AnimationsConfig CONFIG;
+    public static AnimationsConfig ANIM_CONFIG;
+    public static PlayerConfig LOCAL_PLAYER_CONFIG;
+
+
     public static String MODID = "animation_overhaul";
     public static final Logger LOGGER = LoggerFactory.getLogger("animation_overhaul");
 
@@ -32,17 +37,8 @@ public class AnimationOverhaul
     //#else
     //$$ public AnimationOverhaul() {
     //#endif
-        NecConfigAPI.registerConfig(AnimationsConfig.class);
-        CONFIG = AnimationsConfig.INSTANCE;
-
-        if (CONFIG.isOutdated()) {
-            LOGGER.warn("Your Animation Overhaul config is outdated! It has been updated to the latest version and your old config was renamed to animation_overhaul.json5.old");
-
-            AnimationsConfig.updateConfig();
-
-            NecConfigAPI.registerConfig(AnimationsConfig.class);
-            CONFIG = AnimationsConfig.INSTANCE;
-        }
+        CompatibilityLoader.refresh();
+        ConfigLoader.reloadConfigs();
 
         LOGGER.info("Animation Overhaul's Config initialized");
     }

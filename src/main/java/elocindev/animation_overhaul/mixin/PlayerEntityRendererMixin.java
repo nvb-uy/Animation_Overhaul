@@ -1,6 +1,7 @@
 package elocindev.animation_overhaul.mixin;
 
 import elocindev.animation_overhaul.compat.SpellEngineCompat;
+import elocindev.animation_overhaul.AnimationOverhaul;
 import elocindev.animation_overhaul.api.ILeanablePlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
@@ -41,14 +42,14 @@ public abstract class PlayerEntityRendererMixin
         MultiBufferSource vertexConsumerProvider, int i, CallbackInfo ci) {
 
         Minecraft mc = Minecraft.getInstance();
-        if (mc.gameRenderer == null || player != mc.player) return;
+        if (!AnimationOverhaul.LOCAL_PLAYER_CONFIG.enable_leaning_and_squash || mc.gameRenderer == null || player != mc.player) return;
 
         if (!mc.gameRenderer.getMainCamera().isDetached()
                 && player == mc.player) {
             return;
         }
         
-        if (SpellEngineCompat.shouldLetAnimate(player)) return;
+        if (SpellEngineCompat.shouldNotLetAnimate(player)) return;
 
         matrixStack.pushPose();
 
