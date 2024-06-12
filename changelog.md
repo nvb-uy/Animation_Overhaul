@@ -1,3 +1,6 @@
+## 1.3.1
+- Fixed a debug log spamming console
+
 ## 1.3.0
 - Leaning is now only affected on the local player
 - Added "local_player.json5" config, which allows to config specific features only the local player has
