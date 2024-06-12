@@ -389,9 +389,6 @@ public abstract class AbstractClientPlayerEntityMixin extends Player implements 
             enableArmAnimations();
         }
 
-        // check if the hand is right or left
-        System.out.println(this.getMainArm());
-
         lastPos = new Vec3(pos.x, pos.y, pos.z);
         lastOnGround = onGround;
     }
