@@ -185,10 +185,10 @@ tasks {
     clean { delete("${project.rootDir}/jars") }
 
     project.modrinth {
-        token.set(System.getenv("MODRINTH_TOKEN"))
+        token.set(System.getenv("MR_TOKEN"))
         projectId.set("jCikwMS7")
         versionNumber.set(mod_version)
-        versionName.set("[${getMcVersionStr()}-${platform.loaderStr}] Animation Overhaul v$mod_version")
+        versionName.set("Animation Overhaul $mod_version")
         uploadFile.set(remapJar.get().archiveFile as Any)
         gameVersions.addAll(getMcVersionList())
         if (platform.isFabric) {
@@ -206,7 +206,7 @@ tasks {
 
     project.curseforge {
         project(closureOf<CurseProject> {
-            apiKey = System.getenv("CURSEFORGE_TOKEN")
+            apiKey = System.getenv("CF_TOKEN")
             id = "1028436"
             changelog = file("../../changelog.md")
             changelogType = "markdown"
@@ -221,7 +221,11 @@ tasks {
                 addGameVersion("Forge")
                 if (platform.mcMinor >= 20) addGameVersion("NeoForge")
             }
-            releaseType = "release"
+            if (platform.isFabric) {
+                releaseType = "release"
+            } else {
+                releaseType = "beta"
+            }
             mainArtifact(remapJar.get().archiveFile, closureOf<CurseArtifact> {
                 displayName = "[${getMcVersionStr()}-${platform.loaderStr}] Animation Overhaul v$mod_version"
             })
@@ -234,7 +238,7 @@ tasks {
     }
 
     register("publish") {
-        // dependsOn(modrinth)
+        dependsOn(modrinth)
         dependsOn(curseforge)
     }
 }
